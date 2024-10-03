@@ -7,10 +7,78 @@
 </head>
 <body>
   <div class="header-contents">
-    <h1>ToDo</h1>
+    <h1>ToDoリスト</h1>
   </div>
 
-  <p>本日の日付:</p>
-  <script src="/static/css/js/main.js"></script>
+  <p>本日の日付:<script src="/js/main.js"></script></p>
+
+  <form th:action="@{/new}" th:method="get"></form>
+      <button class="new-button" type="button">新規タスク</button>
+  </a>
+  <div class="form-group">
+      <form action="./" method="get">
+          <p>
+              期限
+              <input type="date" name="start" size="8" th:value="${start}"> ~
+          </p>
+          <p>
+              <input type="date" name="end" size="8" th:value="${end}">
+          </p>
+            ステータス
+          <select name="status">
+              <option value="" selected disabled></option>
+              <option value="1">未着手</option>
+              <option value="2">実行中</option>
+              <option value="3">ステイ中</option>
+              <option value="4">完了</option>
+          </select>
+        <p>
+          タスク内容 <input type="search" name="taskContent" size="8" th:value="${taskContent}">
+        </p>
+          <input type="submit" value="絞込">
+      </form>
+  </div>
+  <div class="task" th:each="task : ${tasks}">
+
+      <div>
+          タスク内容
+          <span th:text="${task.content}"></span>
+      </div>
+
+      <div>
+          <form th:action="@{/update/{id}(id=${task.id})}" th:method="put">
+              <div class="form-area">
+                  <label>ステータス</label>
+                  <select name="status">
+                      <option value="" selected disabled>${task.content}</option>
+                      <option value="1">未着手</option>
+                      <option value="2">実行中</option>
+                      <option value="3">ステイ中</option>
+                      <option value="4">完了</option>
+                  </select>
+                  <dialog>
+
+                      <button id="close">キャンセル</button>
+                  </dialog>
+                    <form method="dialog">
+                        <p>変更します。本当によろしいですか？</p>
+                        <button type="submit" value="yes">OK</button>
+                        <button type="submit" value="no">キャンセル</button>
+                    </form>
+                  <button id="show" type="submit" value="変更"></button>
+              </div>
+          </form>
+      </div>
+      <div>
+          タスク期限
+          <span th:text="${task.limitDate}"/>
+      </div>
+
+      <div class="delete-button">
+          <form th:action="@{/delete/{id}(id=${task.id})}" th:method="delete">
+              <input type="submit" value="削除">
+          </form>
+      </div>
+  </div>
 </body>
 </html>

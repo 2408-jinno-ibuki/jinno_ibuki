@@ -3,12 +3,15 @@ package com.example.jinno_ibuki.service;
 import com.example.jinno_ibuki.controller.Form.ReportForm;
 import com.example.jinno_ibuki.repository.ReportEntity;
 import com.example.jinno_ibuki.repository.ReportRepository;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,8 +20,31 @@ public class ReportService {
     ReportRepository reportRepository;
 
     //タスク情報取得処理
-    public List<ReportForm> findAllTasks() {
-        List<ReportEntity> results = reportRepository.findAllByOrderByLimitDateAsc(Limit.of(1000));
+    public List<ReportForm> findAllTasks
+    (String startDate, String endDate, String content, Double status) throws ParseException {
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final String defaultStart = "2020-01-01 00:00:00";
+        final String defaultEnd = "2100-12-31 23:59:59";
+
+        if (!StringUtils.isEmpty(startDate)) {
+            startDate = startDate + " 00:00:00";
+        } else {
+            startDate = defaultStart;
+        }
+        if (!StringUtils.isEmpty(endDate)) {
+            endDate = endDate + " 23:59:59";
+        } else {
+            endDate = defaultEnd;
+        }
+
+        Date start = dateFormat.parse(startDate);
+        Date end = dateFormat.parse(endDate);
+
+        List<ReportEntity> results =
+                reportRepository.findByLimitDateBetweenAndContentAndStatusOrderByLimitDateAsc
+                        (start, end, content, status, Limit.of(1000));
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }
@@ -39,5 +65,26 @@ public class ReportService {
         }
         return reports;
     }
-}
 
+    //タスク削除処理
+    public void deleteReport(Integer id) {
+        reportRepository.deleteById(id);
+    }
+
+    //ステータス変更処理(Update)
+    public void saveReport(ReportForm form){
+        ReportEntity saveReport = setEntity(form);
+        reportRepository.save(saveReport);
+    }
+
+    //formからEntityに詰め替え
+    public ReportEntity setEntity(ReportForm form){
+        ReportEntity entity = new ReportEntity();
+        entity.setId(form.getId());
+        entity.setContent(form.getContent());
+        entity.setLimitDate(form.getLimitDate());
+        entity.setCreatedDate(form.getCreatedDate());
+        entity.setUpdatedDate(form.getUpdatedDate());
+        return entity;
+    }
+}
