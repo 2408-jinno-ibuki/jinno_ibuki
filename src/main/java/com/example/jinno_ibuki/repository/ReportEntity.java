@@ -20,7 +20,7 @@ public class ReportEntity {
     private String content;
 
     @Column
-    private double status;
+    private Integer status;
 
     @Column(name="limit_date", insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -33,4 +33,7 @@ public class ReportEntity {
     @Column(name="updated_date", insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
+
+    @Transient
+    private String strLimitDate;
 }

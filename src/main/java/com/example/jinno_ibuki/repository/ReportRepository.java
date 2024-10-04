@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ReportRepository extends JpaRepository<ReportEntity, Integer> {
     List<ReportEntity> findByLimitDateBetweenAndContentAndStatusOrderByLimitDateAsc
-            (Date start, Date end, String content, Double status, Limit limit);
+            (Date start, Date end, String content, Integer status, Limit limit);
 }

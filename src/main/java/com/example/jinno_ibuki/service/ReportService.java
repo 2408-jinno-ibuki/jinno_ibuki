@@ -21,7 +21,7 @@ public class ReportService {
 
     //タスク情報取得処理
     public List<ReportForm> findAllTasks
-    (String startDate, String endDate, String content, Double status) throws ParseException {
+    (String startDate, String endDate, String content, Integer status) throws ParseException {
 
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -71,7 +71,7 @@ public class ReportService {
         reportRepository.deleteById(id);
     }
 
-    //ステータス変更処理(Update)
+    //タスク登録処理
     public void saveReport(ReportForm form){
         ReportEntity saveReport = setEntity(form);
         reportRepository.save(saveReport);
@@ -82,6 +82,7 @@ public class ReportService {
         ReportEntity entity = new ReportEntity();
         entity.setId(form.getId());
         entity.setContent(form.getContent());
+        entity.setStatus(form.getStatus());
         entity.setLimitDate(form.getLimitDate());
         entity.setCreatedDate(form.getCreatedDate());
         entity.setUpdatedDate(form.getUpdatedDate());
