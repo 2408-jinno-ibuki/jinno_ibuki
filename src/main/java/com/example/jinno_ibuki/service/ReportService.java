@@ -43,8 +43,8 @@ public class ReportService {
         Date end = dateFormat.parse(endDate);
 
         List<ReportEntity> results =
-                reportRepository.findByLimitDateBetweenAndContentAndStatusOrderByLimitDateAsc
-                        (start, end, content, status, Limit.of(1000));
+                reportRepository.task();
+                        //(start, end, content, status, Limit.of(1000));
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }
@@ -84,8 +84,16 @@ public class ReportService {
         entity.setContent(form.getContent());
         entity.setStatus(form.getStatus());
         entity.setLimitDate(form.getLimitDate());
-        entity.setCreatedDate(form.getCreatedDate());
-        entity.setUpdatedDate(form.getUpdatedDate());
+        //entity.setCreatedDate(form.getCreatedDate());
+        //entity.setUpdatedDate(form.getUpdatedDate());
         return entity;
+    }
+
+    //タスク編集機能
+    public ReportForm editReport(Integer id) {
+        List<ReportEntity> results = new ArrayList<>();
+        results.add((ReportEntity) reportRepository.findById(id).orElse(null));
+        List<ReportForm> reports = setReportForm(results);
+        return reports.get(0);
     }
 }

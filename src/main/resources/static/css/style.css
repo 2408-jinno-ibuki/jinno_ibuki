@@ -130,6 +130,6 @@ label {
 	margin-left: 10px;
 	color: red;
 }
-.form-group {
-    display: inline;
+.select {
+    display:flex;
 }

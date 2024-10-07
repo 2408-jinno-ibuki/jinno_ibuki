@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link th:href="@{/css/style.css}" rel="styleSheet">
     <title>ToDoリスト</title>
-    <script th:src="@{/webjars/ jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
 	<script th:src="@{/js/dialog.js}" defer="defer"></script>
 </head>
 <body>
@@ -18,27 +18,27 @@
       <button class="new-button" type="submit">新規タスク</button>
   </form>
   </a>
-  <div class="form-group">
+  <div class="select">
       <form action="./" method="get">
-          <p>
+          <div class="search>">
               期限
               <input type="date" name="start" th:value="${start}"> ~
-          </p>
-          <p>
               <input type="date" name="end" th:value="${end}">
-          </p>
-            ステータス
-          <select name="status">
-              <option value="" selected disabled></option>
-              <option value="1">未着手</option>
-              <option value="2">実行中</option>
-              <option value="3">ステイ中</option>
-              <option value="4">完了</option>
-          </select>
-        <p>
-          タスク内容 <input type="search" name="taskContent" size="8" th:value="${taskContent}">
-        </p>
-          <input type="submit" value="絞込">
+          </div>
+          <div class="search">
+                ステータス
+              <select name="status">
+                  <option value="" selected disabled></option>
+                  <option value="1">未着手</option>
+                  <option value="2">実行中</option>
+                  <option value="3">ステイ中</option>
+                  <option value="4">完了</option>
+              </select>
+          </div>
+          <div class="search">
+              タスク内容 <input type="search" name="taskContent" size="8" th:value="${taskContent}">
+              <input type="submit" value="絞込">
+          </div>
       </form>
   </div>
   <div class="task" th:each="task : ${tasks}">
@@ -48,11 +48,10 @@
       </div>
 
       <div>
-          <form th:action="@{/update/{id}(id=${task.id})}" th:method="put">
+          <form th:action="@{/select/{id}(id=${task.id})}" th:method="put">
               <div class="form-area">
                   <label>ステータス</label>
                   <select name="status">
-                      <option value="" selected disabled>${task.content}</option>
                       <option value="1" th:selected="${status == 1}">未着手</option>
                       <option value="2" th:selected="${status == 2}">実行中</option>
                       <option value="3" th:selected="${status == 3}">ステイ中</option>
@@ -62,9 +61,15 @@
               </div>
           </form>
       </div>
-      <div>
+      <div class="task-limit">
           タスク期限
           <span th:text="${task.limitDate}"/>
+      </div>
+
+      <div class="edit-button">
+          <form th:action="@{/edit/{id}(id=${task.id})}" th:method="get">
+              <button class="edit-action" type="submit">編集</button>
+          </form>
       </div>
 
       <div class="delete-button">

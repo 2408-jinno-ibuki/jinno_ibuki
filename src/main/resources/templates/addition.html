@@ -11,7 +11,7 @@
   </div>
 
     <div class="main-contents">
-        <form th:action="@{/add}" th:object="${formModel}" th:method="post">
+        <form th:action="@{/add}" th:object="${tasks}" th:method="post">
             <div class="error-message">
                 <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
                 <span th:if="${#fields.hasErrors('limitDate')}" th:errors="*{limitDate}"></span>
@@ -20,12 +20,13 @@
                 <textarea th:field="*{content}" size="20" maxlength="140"></textarea>
             </p>
             <p>タスク期限<br>
-                <input type="date" name="limitDate" th:value="${limitDate}">
+                <input type="date" th:field="*{strLimitDate}">
             </p>
             <input type="submit" name="追加"><br>
-            <a href="top.html">戻る</a>
         </form>
+        <div class="footer-contents">
+            <a th:href="@{http://localhost:8080/}">戻る</a>
+        </div>
     </div>
-
 </body>
 </html>
