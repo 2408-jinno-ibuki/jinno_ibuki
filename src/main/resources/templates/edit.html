@@ -15,9 +15,6 @@
       <div>
         <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
         <span th:if="${#fields.hasErrors('limitDate')}" th:errors="*{limitDate}"></span>
-        <div class="errorMessage" th:each="error : ${errorMessages}">
-          <p th:text="${error}"></p>
-        </div>
       </div>
       タスク内容<br>
       <textarea class="tweet-box" name="content" th:field="*{content}" size="20" maxlength="200" /></textarea><br/>

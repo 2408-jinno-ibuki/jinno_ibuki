@@ -4,9 +4,11 @@ import com.example.jinno_ibuki.controller.Form.ReportForm;
 import com.example.jinno_ibuki.repository.ReportEntity;
 import com.example.jinno_ibuki.repository.ReportRepository;
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,9 +44,7 @@ public class ReportService {
         Date start = dateFormat.parse(startDate);
         Date end = dateFormat.parse(endDate);
 
-        List<ReportEntity> results =
-                reportRepository.task();
-                        //(start, end, content, status, Limit.of(1000));
+        List<ReportEntity> results = reportRepository.task(start, end, content, status, Limit.of(1000));
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }
@@ -70,6 +70,10 @@ public class ReportService {
     public void deleteReport(Integer id) {
         reportRepository.deleteById(id);
     }
+    //タスクステータス更新処理
+    public void updateReport(Integer id, Integer status){
+        reportRepository.update(id, status);
+    }
 
     //タスク登録処理
     public void saveReport(ReportForm form){
@@ -84,15 +88,20 @@ public class ReportService {
         entity.setContent(form.getContent());
         entity.setStatus(form.getStatus());
         entity.setLimitDate(form.getLimitDate());
-        //entity.setCreatedDate(form.getCreatedDate());
-        //entity.setUpdatedDate(form.getUpdatedDate());
         return entity;
     }
 
     //タスク編集機能
+    @Autowired
+    HttpSession session;
     public ReportForm editReport(Integer id) {
         List<ReportEntity> results = new ArrayList<>();
         results.add((ReportEntity) reportRepository.findById(id).orElse(null));
+
+        //存在しないタスクidかチェック
+        if(results.get(0) == null){
+            return null;
+        }
         List<ReportForm> reports = setReportForm(results);
         return reports.get(0);
     }

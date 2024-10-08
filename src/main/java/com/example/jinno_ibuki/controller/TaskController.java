@@ -37,6 +37,7 @@ public class TaskController {
         List<ReportForm> tasksData = reportService.findAllTasks(start, end, content, status);
         mav.setViewName("/top");
         //取得してきたタスク情報保管
+        mav.addObject("error", session.getAttribute("errorMessages"));
         mav.addObject("tasks", tasksData);
         return mav;
     }
@@ -68,7 +69,7 @@ public class TaskController {
         ModelAndView mav = new ModelAndView();
         form.setId(id);
         form.setStatus(status);
-        reportService.saveReport(form);
+        reportService.updateReport(id, status);
 
         return new ModelAndView("redirect:/");
     }
@@ -93,19 +94,28 @@ public class TaskController {
     }
 
     //タスク編集画面表示処理
-    @GetMapping({ "/edit", "/edit/{id}" })
+    @Autowired
+    HttpSession session;
+    @GetMapping({ "/edit/", "/edit/{id}" })
     public ModelAndView editContent(@PathVariable(name= "id", required = false) String id) {
         ModelAndView mav = new ModelAndView();
+
         //idがnull or 数字か確認
         List<String> errorMessages = new ArrayList<String>();
         if (StringUtils.isBlank(id) || !id.matches("^[0-9]*$")) {
             errorMessages.add("不正なパラメーターが入力されました");
-            mav.addObject("errorMessages", errorMessages);
-            mav.setViewName("/top");
-            return mav;
+            session.setAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/");
         }
+
         Integer taskId = Integer.parseInt(id);
         ReportForm reportForm = reportService.editReport(taskId);
+
+        if (reportForm == null) {
+            errorMessages.add("不正なパラメーターが入力されました");
+            session.setAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/");
+        }
 
         mav.addObject("tasks", reportForm);
         // 画面遷移先を指定
